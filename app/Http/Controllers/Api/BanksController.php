@@ -7,10 +7,23 @@ use App\Http\Controllers\Controller;
 
 class BanksController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $result = \App\Bank::paginate();
+        $limit = isset($request->all()['limit']) ? $request->all()['limit'] : 20;
 
+        $order = isset($request->all()['order']) ? $request->all()['order'] : null;
+
+        if ($order != null){
+            $order = explode(',', $order);
+        }
+
+        $order[0] = isset($order[0]) ? $order[0] : 'id';
+
+        $order[1] = isset($order[1]) ? $order[1] :'asc';
+
+        $result = \App\Bank::orderBy($order[0], $order[1])
+            ->paginate($limit);
+        
         return response()->json($result);
     }
 
