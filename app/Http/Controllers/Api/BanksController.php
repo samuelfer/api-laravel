@@ -21,7 +21,19 @@ class BanksController extends Controller
 
         $order[1] = isset($order[1]) ? $order[1] :'asc';
 
+        $where = isset($request->all()['where']) ? $request->all()['where'] : [];
+
+        $like = isset($request->all()['like']) ? $request->all()['like'] : null;
+
+        if ($like) {
+            $like = explode(',', $like);
+            $like[1] = '%'.'%';
+        }
+
+
+
         $result = \App\Bank::orderBy($order[0], $order[1])
+            ->where($where)
             ->paginate($limit);
         
         return response()->json($result);
