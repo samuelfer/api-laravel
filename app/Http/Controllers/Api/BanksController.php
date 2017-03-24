@@ -33,7 +33,8 @@ class BanksController extends Controller
 
 
         $result = \App\Bank::orderBy($order[0], $order[1])
-            ->where($where)
+            ->where(function($query) use ($like)
+            return $query->$where($like[0].'like'.$like[0])
             ->paginate($limit);
         
         return response()->json($result);
